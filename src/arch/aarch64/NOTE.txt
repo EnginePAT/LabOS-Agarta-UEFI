@@ -1,0 +1,5 @@
+-------------------
+IMPORTANT NOTE!
+-------------------
+
+AARCH64 is not yet supported in LabOS Agarta! This is a plan for the future. Feel free to start it!

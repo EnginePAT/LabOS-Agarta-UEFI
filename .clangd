@@ -1,0 +1,15 @@
+CompileFlags:
+  Add:
+    - --target=x86_64-elf
+    - -ffreestanding
+    - -mno-red-zone
+    - -mcmodel=kernel
+    - -mno-sse
+    - -mno-sse2
+    - -I/Users/patrick/Documents/LabOS-Agarta/src
+    - -I/Users/patrick/Documents/LabOS-Agarta/include
+    - -x
+    - c
+  Remove:
+    - -mno-80387
+    - -mno-mmx
