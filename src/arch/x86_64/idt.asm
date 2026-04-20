@@ -1,6 +1,7 @@
+bits 64
+
 global idt_load
 global isr_stub_table
-
 extern isr_handler
 
 %macro isr_stub 1
@@ -10,14 +11,12 @@ isr_stub_%1:
     jmp isr_common
 %endmacro
 
-; Generate all 256 stubs FIRST
 %assign i 0
 %rep 256
     isr_stub i
 %assign i i+1
 %endrep
 
-; Common handler
 isr_common:
     push rax
     push rbx
@@ -61,7 +60,6 @@ idt_load:
     lidt [rdi]
     ret
 
-; Table AFTER stubs so all symbols are defined
 isr_stub_table:
 %assign i 0
 %rep 256

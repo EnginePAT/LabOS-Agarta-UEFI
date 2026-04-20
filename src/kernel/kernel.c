@@ -8,12 +8,8 @@
 #include <core/requests.h>
 #include <arch/x86_64/gdt.h>
 #include <arch/x86_64/idt.h>
-
-typedef struct RGB {
-    uint8_t r;
-    uint8_t g;
-    uint8_t b;
-} RGB;
+#include <drivers/framebuffer.h>
+#include <drivers/font.h>
 
 // Halt and catch fire function.
 static void hcf(void) {
@@ -22,8 +18,11 @@ static void hcf(void) {
     }
 }
 
-void putpixel(int x, int y, RGB color, struct limine_framebuffer* fb, volatile uint32_t* fb_ptr) {
-    fb_ptr[y * (fb->pitch / 4) + x] = (color.r << 16) | (color.g << 8) | color.b;
+void trigger_div0() {
+    volatile int x = 1;
+    volatile int y = 0;
+    volatile int z = x / y;
+    (void)z;
 }
 
 void drawrect(int x, int y, int w, int h, RGB color, struct limine_framebuffer* fb, volatile uint32_t* fb_ptr)
@@ -55,12 +54,12 @@ void kernel_main(void) {
         hcf();
     }
 
-    // Initialize the GDT & IDT
-    gdt_init();
-    idt_init();
-
     struct limine_framebuffer *framebuffer = framebuffer_request.response->framebuffers[0];
     volatile uint32_t *fb_ptr = framebuffer->address;
+
+    // Initialize the GDT & IDT
+    gdt_init();
+    idt_init(framebuffer, fb_ptr);
 
     // Print a nice pattern to screen as an example.
     // Note: we assume the framebuffer model is RGB with 32-bit pixels.
@@ -74,6 +73,11 @@ void kernel_main(void) {
 
     RGB color = { 255, 255, 255 };
     drawrect(100, 100, 200, 300, color, framebuffer, fb_ptr);
+
+    draw_string("Hello, world!", 500, 500, color, framebuffer, fb_ptr);
+
+    // Lets try and trigger an exception hehe
+    trigger_div0();         // Divide by 0 - impossible in real numbers, gives us an infinite result, hence why computers also can't do it
 
     // We're done, just hang...
     hcf();
