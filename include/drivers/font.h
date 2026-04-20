@@ -267,7 +267,7 @@ static const uint8_t vga_font[256][16] = {
     { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, /* 0xFF */
 };
 
-void draw_char(char c, int x, int y, RGB color, struct limine_framebuffer* fb, volatile uint32_t* fb_ptr);
-void draw_string(const char* str, int x, int y, RGB color, struct limine_framebuffer* fb, volatile uint32_t* fb_ptr);
+void draw_char(char c, int x, int y, RGB color);
+void draw_string(const char* str, int x, int y, RGB color);
 
 #endif // FONT_H

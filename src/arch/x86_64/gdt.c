@@ -41,9 +41,5 @@ bool gdt_init() {
     // Load TSS — selector 0x18 (index 3, GDT entry 3)
     __asm__ volatile ("ltr %0" :: "r"((uint16_t)0x18));
 
-    // Initialize the PIC
-    pic_init();
-    __asm__ volatile ("sti");           // Enable interrupts
-
     return true;
 }

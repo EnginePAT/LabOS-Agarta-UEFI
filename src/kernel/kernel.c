@@ -1,3 +1,4 @@
+#include "arch/x86_64/pic.h"
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
@@ -10,6 +11,7 @@
 #include <arch/x86_64/idt.h>
 #include <drivers/framebuffer.h>
 #include <drivers/font.h>
+#include <drivers/keyboard.h>
 
 // Halt and catch fire function.
 static void hcf(void) {
@@ -34,7 +36,7 @@ void drawrect(int x, int y, int w, int h, RGB color, struct limine_framebuffer* 
             // Now we can compute the pixel offsets
             int offsetX = (x + w) - i;
             int offsetY = (y + h) - j;
-            putpixel(offsetX, offsetY, color, fb, fb_ptr);
+            putpixel(offsetX, offsetY, color);
         }
     }
 }
@@ -60,6 +62,9 @@ void kernel_main(void) {
     // Initialize the GDT & IDT
     gdt_init();
     idt_init(framebuffer, fb_ptr);
+    // Initialize the PIC
+    pic_init();
+    __asm__ volatile ("sti");           // Enable interrupts
 
     // Print a nice pattern to screen as an example.
     // Note: we assume the framebuffer model is RGB with 32-bit pixels.
@@ -74,10 +79,10 @@ void kernel_main(void) {
     RGB color = { 255, 255, 255 };
     drawrect(100, 100, 200, 300, color, framebuffer, fb_ptr);
 
-    draw_string("Hello, world!", 500, 500, color, framebuffer, fb_ptr);
+    draw_string("Hello, world!", 500, 500, color);
 
     // Lets try and trigger an exception hehe
-    trigger_div0();         // Divide by 0 - impossible in real numbers, gives us an infinite result, hence why computers also can't do it
+    // trigger_div0();         // Divide by 0 - impossible in real numbers, gives us an infinite result, hence why computers also can't do it
 
     // We're done, just hang...
     hcf();

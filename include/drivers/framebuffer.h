@@ -2,6 +2,8 @@
 #define FRAMEBUFFER_H
 
 #include <core/limine.h>
+#include <stdint.h>
+#include <stdbool.h>
 
 typedef struct RGB {
     uint8_t r;
@@ -9,6 +11,10 @@ typedef struct RGB {
     uint8_t b;
 } RGB;
 
-void putpixel(int x, int y, RGB color, struct limine_framebuffer* fb, volatile uint32_t* fb_ptr);
+extern struct limine_framebuffer* fb;
+extern volatile uint32_t* fb_ptr;
+
+bool fb_init(struct limine_framebuffer* _fb, volatile uint32_t* _fb_ptr);
+void putpixel(int x, int y, RGB color);
 
 #endif      // FRAMEBUFFER_H

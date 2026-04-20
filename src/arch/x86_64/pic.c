@@ -20,9 +20,13 @@ bool pic_init() {
     outb(0x21, 0x01);
     outb(0xA1, 0x01);
 
-    // Restore masks
-    outb(0x21, mask0);
-    outb(0xA1, mask1);
+    // Start from old mask, but ensure IRQ1 is unmasked
+    mask0 &= ~(1 << 1);   // clear bit 1 → enable IRQ1
+    // maybe also: mask0 &= ~(1 << 0);   // enable IRQ0 (timer) if you want
+
+    // // Restore masks
+    // outb(0x21, mask0);
+    // outb(0xA1, mask1);
 
     return true;
 }
